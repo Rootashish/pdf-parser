@@ -1,21 +1,16 @@
-@app.route("/")
-def home():
-    return "Welcome to the PDF Parser API! Use the /upload endpoint to upload a PDF."
-
 import pdfplumber
 import re
-import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Regex patterns for email and phone numbers
+# Regex patterns for emails & phone numbers
 email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
 phone_pattern = r'(\+?\d{1,3}[-.\s]?)?(\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{4}'
 
 @app.route("/")
-def home():
-    return "Welcome to the PDF Parser API! Use the /upload endpoint to upload a PDF."
+def index():
+    return render_template("index.html")
 
 def extract_text_from_pdf(pdf_path):
     text = ""
@@ -52,9 +47,6 @@ def upload_pdf():
 
     text = extract_text_from_pdf(pdf_path)
     data = parse_details(text)
-
-    df = pd.DataFrame(data, columns=["Name", "Email", "Phone"])
-    df.to_csv("extracted_data.csv", index=False)  
 
     return jsonify({"message": "File processed", "data": data})
 
