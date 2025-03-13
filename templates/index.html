@@ -7,8 +7,11 @@
     <script>
         function uploadFile() {
             let formData = new FormData();
-            let fileInput = document.getElementById("file");
-            formData.append("file", fileInput.files[0]);
+            let files = document.getElementById("file").files;
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files", files[i]);  // Append each file
+            }
 
             fetch("/upload", {
                 method: "POST",
@@ -28,8 +31,8 @@
     </script>
 </head>
 <body>
-    <h2>Upload a PDF to Extract Data</h2>
-    <input type="file" id="file">
+    <h2>Upload PDFs to Extract Data</h2>
+    <input type="file" id="file" multiple>  <!-- Enable multiple files -->
     <button onclick="uploadFile()">Upload</button>
     <div id="output"></div>
 </body>
