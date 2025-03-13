@@ -30,10 +30,11 @@ def parse_details(text):
     names = []
 
     for line in lines:
-        if any(email in line for email in emails):
-            names.append(line.split(email)[0].strip())  # Extract name before email
+        for email in emails:
+            if email in line:
+                names.append(line.split(email)[0].strip())  # Extract name before email
 
-    phones = ["".join(phone) for phone in phones]
+    phones = ["".join(phone) for phone in phones]  # Clean phone number formatting
     return list(zip(names, emails, phones))
 
 @app.route("/upload", methods=["POST"])
