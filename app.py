@@ -1,3 +1,7 @@
+@app.route("/")
+def home():
+    return "Welcome to the PDF Parser API! Use the /upload endpoint to upload a PDF."
+
 import pdfplumber
 import re
 import pandas as pd
