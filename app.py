@@ -17,7 +17,7 @@ def extract_text_from_pdf(pdf_path):
     text = ""
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
-            extracted_text = page.extract_text()
+            extracted_text = page.extract_text(x_tolerance=2, y_tolerance=2)  # Improved accuracy
             if extracted_text:
                 text += extracted_text + "\n"
     return text
@@ -39,18 +39,22 @@ def parse_details(text):
     return list(zip(names, emails, phones))
 
 @app.route("/upload", methods=["POST"])
-def upload_pdf():
-    if "file" not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+def upload_pdfs():
+    if "files" not in request.files:
+        return jsonify({"error": "No files provided"}), 400
 
-    pdf_file = request.files["file"]
-    pdf_path = f"./{pdf_file.filename}"
-    pdf_file.save(pdf_path)
+    files = request.files.getlist("files")  # Get multiple files
+    all_data = []
 
-    text = extract_text_from_pdf(pdf_path)
-    data = parse_details(text)
+    for pdf_file in files:
+        pdf_path = f"./{pdf_file.filename}"
+        pdf_file.save(pdf_path)
 
-    return jsonify({"message": "File processed", "data": data})
+        text = extract_text_from_pdf(pdf_path)
+        data = parse_details(text)
+        all_data.extend(data)  # Append all extracted data
+
+    return jsonify({"message": "Files processed", "data": all_data})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Render assigns a dynamic port
