@@ -9,6 +9,10 @@ app = Flask(__name__)
 email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
 phone_pattern = r'(\+?\d{1,3}[-.\s]?)?(\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{4}'
 
+@app.route("/")
+def home():
+    return "Welcome to the PDF Parser API! Use the /upload endpoint to upload a PDF."
+
 def extract_text_from_pdf(pdf_path):
     text = ""
     with pdfplumber.open(pdf_path) as pdf:
