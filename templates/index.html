@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Parser</title>
+    <script>
+        function uploadFile() {
+            let formData = new FormData();
+            let fileInput = document.getElementById("file");
+            formData.append("file", fileInput.files[0]);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let output = "<h3>Extracted Data</h3><table border='1'><tr><th>Name</th><th>Email</th><th>Phone</th></tr>";
+                data.data.forEach(row => {
+                    output += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`;
+                });
+                output += "</table>";
+                document.getElementById("output").innerHTML = output;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</head>
+<body>
+    <h2>Upload a PDF to Extract Data</h2>
+    <input type="file" id="file">
+    <button onclick="uploadFile()">Upload</button>
+    <div id="output"></div>
+</body>
+</html>
