@@ -1,4 +1,3 @@
-pdfplumber
-pandas
 flask
+pdfplumber
 gunicorn
